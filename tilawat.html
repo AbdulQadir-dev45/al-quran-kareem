@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Tilawat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Reading</a></li>
+                <li><a href="tilawat.html">Tilawat</a></li>
+                <li><a href="tilawat-urdu.html">Tilawat (Urdu)</a></li>
+                <li><button id="modeToggle">🌙</button></li>
+            </ul>
+            <!-- Hamburger icon -->
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+
+    <main class="container">
+
+        <div class="tilawat-header">
+
+        <select id="qariSelect">
+            <option value="ar.alafasy">Mishary Rashid Alafasy</option>
+            <option value="ar.abdurrahmaansudais">Abdur Rahman As-Sudais</option>
+            <option value="ar.abdullahbasfar">Abdullah Basfar</option>
+            <option value="ar.mahermuaiqly">Maher Al Muaiqly</option>
+            <option value="ar.saoodshuraym">Saud Al-Shuraim</option>
+            <option value="ar.ahmedajamy">Ahmed Al-Ajmi</option>
+        </select>
+
+        </div>
+
+        <input type="text" id="searchSurah" placeholder="Search Surah...">
+
+        <!-- Surah List -->
+        <div id="surahList" class="surah-list"></div>
+
+        <!-- Bottom Player -->
+        <div class="player">
+            <div id="currentSurah">The Quran</div>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="js/theme.js"></script>
+    <script src="js/tilawat.js"></script>
+</body>
+
+</html>
