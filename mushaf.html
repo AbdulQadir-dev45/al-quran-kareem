@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Mushaf</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="mushaf.html">Reading Mushaf</a></li>
+                <li><a href="index.html">Reading with Translation</a></li>
+                <li><a href="tilawat.html">Tilawat</a></li>
+                <li><button id="modeToggle">🌙</button></li>
+            </ul>
+            <!-- Hamburger icon -->
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2 id="mushafTitle">Mushaf Viewer</h2>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="number" id="jump-to-page" min="1" max="604" placeholder="Jump to page...">
+            
+            <button id="bookmark-btn">Bookmark Page</button>
+            <button id="show-bookmarks-btn">Show Bookmarks</button>
+            <button id="fullscreen-btn">Fullscreen</button>
+        </div>
+
+        <!-- Mushaf Images -->
+        <div id="mushaf-container" class="quran"></div>
+
+        <!-- Page Navigation -->
+        <div class="navigation">
+            <button id="prev-btn">Previous</button>
+            <span id="page-number">1</span>
+            <button id="next-btn">Next</button>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-container">
+
+            <div class="footer-about">
+                <h3>Quran Website</h3>
+                <p>
+                    Read and listen to the Holy Quran online.
+                    May Allah guide us all to the right path.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="mushaf.html">Reading Mushaf</a>
+                <a href="index.html">Reading with Translation</a>
+                <a href="mushaf.html">Reading Mushaf</a>
+            </div>
+
+            <div class="footer-dua">
+                <h4>Dua</h4>
+                <p>
+                    اللّهُمَّ اجْعَلِ القُرْآنَ رَبِيعَ قُلُوبِنَا
+                </p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Quran Website | Made with ❤️ for the Ummah</p>
+        </div>
+
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="js/theme.js"></script>
+    <script src="js/mushaf.js"></script>
+
+</body>
+
+</html>
