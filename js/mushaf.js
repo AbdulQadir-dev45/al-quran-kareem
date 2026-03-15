@@ -19,7 +19,7 @@ const modeToggle = document.getElementById('modeToggle');
 // SHOW PAGE
 // ===============================
 function showPage(page) {
-    const folder = "mushaf/";
+    const folder = "images/mushaf/";
     const fileName = `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
     const imgSrc = folder + encodeURI(fileName);
     container.innerHTML = `<img src="${imgSrc}" alt="Page ${page}" loading="lazy">`;
