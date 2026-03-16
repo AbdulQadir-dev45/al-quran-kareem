@@ -1,5 +1,5 @@
 // ===============================
-// MUSHAF VIEWER SCRIPT
+// GLOBAL VARIABLES
 // ===============================
 const totalPages = 604;
 let currentPage = 1;
@@ -16,21 +16,24 @@ const body = document.body;
 const modeToggle = document.getElementById('modeToggle');
 
 // ===============================
-// SHOW PAGE
+// SHOW PAGE FUNCTION
+// Loads and displays the Mushaf page
 // ===============================
 function showPage(page) {
     const folder = "images/mushaf/";
     const fileName = `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
     const imgSrc = folder + encodeURI(fileName);
+
     container.innerHTML = `<img src="${imgSrc}" alt="Page ${page}" loading="lazy">`;
     pageNumberDisplay.textContent = page;
+
     updateImageMode();
     preloadPage(page - 1);
     preloadPage(page + 1);
 }
 
 // ===============================
-// UPDATE IMAGE DARK MODE
+// UPDATE IMAGE MODE (DARK / LIGHT)
 // ===============================
 function updateImageMode() {
     container.querySelectorAll('img').forEach(img => {
@@ -42,11 +45,11 @@ function updateImageMode() {
 // BUTTON EVENTS
 // ===============================
 prevBtn.addEventListener('click', () => {
-    if (currentPage > 1) { currentPage--; showPage(currentPage); }
+    if (currentPage > 1) currentPage-- && showPage(currentPage);
 });
 
 nextBtn.addEventListener('click', () => {
-    if (currentPage < totalPages) { currentPage++; showPage(currentPage); }
+    if (currentPage < totalPages) currentPage++ && showPage(currentPage);
 });
 
 jumpInput.addEventListener('change', () => {
@@ -54,7 +57,9 @@ jumpInput.addEventListener('change', () => {
     if (page >= 1 && page <= totalPages) {
         currentPage = page;
         showPage(currentPage);
-    } else alert(`Enter a number 1-${totalPages}`);
+    } else {
+        alert(`Enter a number between 1 and ${totalPages}`);
+    }
 });
 
 bookmarkBtn.addEventListener('click', () => addBookmark(currentPage));
@@ -69,12 +74,12 @@ modeToggle.addEventListener('click', () => {
 });
 
 // ===============================
-// KEYBOARD EVENTS
+// KEYBOARD NAVIGATION
 // ===============================
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
-        case "ArrowLeft": if (currentPage > 1) { currentPage--; showPage(currentPage); } break;
-        case "ArrowRight": if (currentPage < totalPages) { currentPage++; showPage(currentPage); } break;
+        case "ArrowLeft": if (currentPage > 1) currentPage-- && showPage(currentPage); break;
+        case "ArrowRight": if (currentPage < totalPages) currentPage++ && showPage(currentPage); break;
         case "Home": currentPage = 1; showPage(currentPage); break;
         case "End": currentPage = totalPages; showPage(currentPage); break;
         case "b": case "B": addBookmark(currentPage); break;
@@ -102,15 +107,14 @@ function showBookmarks() {
 // ===============================
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
-        if (container.requestFullscreen) container.requestFullscreen();
-        else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+        container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
     } else {
-        if (document.exitFullscreen) document.exitFullscreen();
+        document.exitFullscreen?.();
     }
 }
 
 // ===============================
-// LAZY LOADING / PRELOAD
+// PRELOAD / LAZY LOAD PAGES
 // ===============================
 function preloadPage(page) {
     if (page < 1 || page > totalPages) return;
@@ -121,10 +125,12 @@ function preloadPage(page) {
 }
 
 // ===============================
-// SWIPE SUPPORT
+// SWIPE SUPPORT (MOBILE)
 // ===============================
 let startX;
-container.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+
+container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+
 container.addEventListener('touchend', e => {
     const endX = e.changedTouches[0].clientX;
     if (startX - endX > 50 && currentPage < totalPages) currentPage++;
@@ -133,6 +139,6 @@ container.addEventListener('touchend', e => {
 });
 
 // ===============================
-// INITIAL LOAD
+// INITIAL PAGE LOAD
 // ===============================
 showPage(currentPage);

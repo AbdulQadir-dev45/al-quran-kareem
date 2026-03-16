@@ -12,15 +12,15 @@
 
     <!-- HEADER -->
     <header>
-        <img src="images/logo.png" alt="" srcset="">
+        <img src="images/logo.png" alt="Quran Website Logo">
         <nav>
             <ul class="nav-links">
-                <li><a href="mushaf.html">Reading Mushaf</a></li>
-                <li><a href="index.html">Reading with Translation</a></li>
+                <li><a href="mushaf.html">Mushaf</a></li>
+                <li><a href="index.html">Urdu Translation</a></li>
+                <li><a href="eng-translation.html">English Translation</a></li>
                 <li><a href="tilawat.html">Tilawat</a></li>
                 <li><button id="modeToggle">🌙</button></li>
             </ul>
-            <!-- Hamburger icon -->
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -29,29 +29,28 @@
         </nav>
     </header>
 
-    <!-- MAIN CONTAINER -->
-
+    <!-- MAIN CONTENT -->
     <main class="container">
 
+        <!-- Qari Selection -->
         <div class="tilawat-header">
-
-        <select id="qariSelect">
-            <option value="ar.alafasy">Mishary Rashid Alafasy</option>
-            <option value="ar.abdurrahmaansudais">Abdur Rahman As-Sudais</option>
-            <option value="ar.abdullahbasfar">Abdullah Basfar</option>
-            <option value="ar.mahermuaiqly">Maher Al Muaiqly</option>
-            <option value="ar.saoodshuraym">Saud Al-Shuraim</option>
-            <option value="ar.ahmedajamy">Ahmed Al-Ajmi</option>
-        </select>
-
+            <select id="qariSelect">
+                <option value="ar.alafasy">Mishary Rashid Alafasy</option>
+                <option value="ar.abdurrahmaansudais">Abdur Rahman As-Sudais</option>
+                <option value="ar.abdullahbasfar">Abdullah Basfar</option>
+                <option value="ar.mahermuaiqly">Maher Al Muaiqly</option>
+                <option value="ar.saoodshuraym">Saud Al-Shuraim</option>
+                <option value="ar.ahmedajamy">Ahmed Al-Ajmi</option>
+            </select>
         </div>
 
+        <!-- Search Surah -->
         <input type="text" id="searchSurah" placeholder="Search Surah...">
 
         <!-- Surah List -->
         <div id="surahList" class="surah-list"></div>
 
-        <!-- Bottom Player -->
+        <!-- Audio Player -->
         <div class="player">
             <div id="currentSurah">The Quran</div>
             <audio id="audioPlayer" controls></audio>
@@ -62,6 +61,6 @@
     <!-- SCRIPTS -->
     <script src="js/theme.js"></script>
     <script src="js/tilawat.js"></script>
-</body>
 
+</body>
 </html>

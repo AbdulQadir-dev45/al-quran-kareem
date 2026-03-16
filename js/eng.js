@@ -1,92 +1,84 @@
-// =============================
-// ELEMENT REFERENCES
-// =============================
+// ==============================
+// ELEMENTS
+// ==============================
 const surahSelect = document.getElementById("surahSelect");
 const quranDiv = document.getElementById("quran");
 const surahTitle = document.getElementById("surahTitle");
 
-// =============================
+// ==============================
 // GLOBAL VARIABLES
-// =============================
-let allAyahs = [];      // Store all displayed ayah elements
-let currentAudio = null; // Currently playing audio
-let surahs = [];         // List of surahs
+// ==============================
+let allAyahs = [];
+let currentAudio = null;
 
-// =============================
+// ==============================
 // LOAD SURAH LIST
-// =============================
+// Fetches all surahs and populates the select dropdown
+// ==============================
 async function loadSurahList() {
     try {
         const res = await fetch("https://api.alquran.cloud/v1/surah");
         const data = await res.json();
 
-        surahs = data.data;      // Store all surahs
-        displaySurahs(surahs);   // Populate select dropdown
-    } catch (error) {
-        console.error(error);
+        data.data.forEach(surah => {
+            const option = document.createElement("option");
+            option.value = surah.number;
+            option.textContent = `${surah.number} - ${surah.englishName}`;
+            surahSelect.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Error loading surah list:", err);
         quranDiv.innerHTML = "❌ Surah list load nahi ho saki";
     }
 }
 
-// =============================
-// DISPLAY SURAH LIST IN DROPDOWN
-// =============================
-function displaySurahs(list) {
-    surahSelect.innerHTML = "";
-
-    list.forEach(surah => {
-        const option = document.createElement("option");
-        option.value = surah.number;
-        option.textContent = `${surah.number} - ${surah.englishName}`;
-        surahSelect.appendChild(option);
-    });
-}
-
-// =============================
-// LOAD SURAH + AYAH AUDIO + URDU TRANSLATION
-// =============================
+// ==============================
+// LOAD SURAH + TRANSLATION + BOOKMARKS
+// Fetches a specific surah (Arabic + English translation)
+// Displays ayahs with play & bookmark functionality
+// ==============================
 async function loadSurah(number) {
     quranDiv.innerHTML = "Loading...";
-
     try {
-        // Fetch Arabic and Urdu translation
-        const [arabicRes, urduRes] = await Promise.all([
+        const [arabicRes, englishRes] = await Promise.all([
             fetch(`https://api.alquran.cloud/v1/surah/${number}`),
-            fetch(`https://api.alquran.cloud/v1/surah/${number}/ur.jalandhry`)
+            fetch(`https://api.alquran.cloud/v1/surah/${number}/en.asad`)
         ]);
 
         const arabicData = await arabicRes.json();
-        const urduData = await urduRes.json();
+        const engData = await englishRes.json();
 
-        // Set Surah title
         surahTitle.textContent = `${arabicData.data.englishName} - ${arabicData.data.name}`;
-
-        // Clear previous ayahs
         quranDiv.innerHTML = "";
         allAyahs = [];
 
+        // Load bookmarks from localStorage
+        let bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+
         arabicData.data.ayahs.forEach((ayah, i) => {
+            // Create Ayah card
             const div = document.createElement("div");
             div.className = "ayah";
             div.dataset.index = i;
 
-            // =============================
-            // PLAY BUTTON
-            // =============================
+            // Create Audio button
             const playBtn = document.createElement("button");
             playBtn.textContent = "▶";
             playBtn.className = "play-ayah";
+            playBtn.style.marginBottom = "10px";
 
-            const audio = new Audio(`https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayah.number}.mp3`);
+            const audio = new Audio(
+                `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayah.number}.mp3`
+            );
 
+            // Play / Pause logic
             playBtn.addEventListener("click", () => {
                 if (currentAudio && currentAudio !== audio) {
                     currentAudio.pause();
                     currentAudio.currentTime = 0;
-
                     allAyahs.forEach(a => a.querySelector(".play-ayah").textContent = "▶");
                 }
-
                 if (audio.paused) {
                     audio.play();
                     playBtn.textContent = "⏸";
@@ -101,34 +93,34 @@ async function loadSurah(number) {
                 playBtn.textContent = "▶";
             });
 
-            // =============================
-            // AYAH CONTENT
-            // =============================
+            // Set inner HTML for Ayah card
             div.innerHTML = `
                 <span class="ayah-number">${i + 1}</span>
                 <span class="bookmark">⭐</span>
                 <div class="arabic">${ayah.text}</div>
-                <div class="urdu">${urduData.data.ayahs[i].text}</div>
+                <div class="translation">${engData.data.ayahs[i].text}</div>
             `;
             div.prepend(playBtn);
 
-            // =============================
-            // BOOKMARK FEATURE
-            // =============================
+            // ==============================
+            // BOOKMARK LOGIC
+            // ==============================
             const bookmarkBtn = div.querySelector(".bookmark");
-            const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
             const key = `${number}-${i}`;
 
-            // Set bookmark status if already bookmarked
-            if (bookmarks.includes(key)) bookmarkBtn.textContent = "✅";
+            if (bookmarks.includes(key)) {
+                bookmarkBtn.textContent = "✅";
+            }
 
             bookmarkBtn.addEventListener("click", () => {
-                let bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+                bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
 
                 if (bookmarks.includes(key)) {
+                    // Remove bookmark
                     bookmarks = bookmarks.filter(b => b !== key);
                     bookmarkBtn.textContent = "⭐";
                 } else {
+                    // Add bookmark
                     bookmarks.push(key);
                     bookmarkBtn.textContent = "✅";
                 }
@@ -136,29 +128,26 @@ async function loadSurah(number) {
                 localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
             });
 
-            // Append ayah to container
             quranDiv.appendChild(div);
             allAyahs.push(div);
         });
 
-        // Scroll to top after loading
+        // Scroll to top when surah loads
         window.scrollTo(0, 0);
 
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error("Error loading surah:", err);
         quranDiv.innerHTML = "❌ Surah load nahi ho saki";
     }
 }
 
-// =============================
-// EVENT LISTENERS
-// =============================
-surahSelect.addEventListener("change", () => {
-    loadSurah(surahSelect.value);
-});
+// ==============================
+// EVENTS
+// ==============================
+surahSelect.addEventListener("change", () => loadSurah(surahSelect.value));
 
-// =============================
+// ==============================
 // INITIAL LOAD
-// =============================
+// ==============================
 loadSurahList();
 loadSurah(1);

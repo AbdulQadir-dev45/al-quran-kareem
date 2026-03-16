@@ -1,17 +1,17 @@
 // =============================
-// ELEMENTS
+// ELEMENT REFERENCES
 // =============================
-const surahList = document.getElementById("surahList");
-const audio = document.getElementById("audioPlayer");
-const qariSelect = document.getElementById("qariSelect");
-const currentSurah = document.getElementById("currentSurah");
-const searchInput = document.getElementById("searchSurah");
+const surahList = document.getElementById("surahList");       // Container for Surah cards
+const audio = document.getElementById("audioPlayer");          // Single audio player
+const qariSelect = document.getElementById("qariSelect");     // Dropdown for reciter selection
+const currentSurah = document.getElementById("currentSurah"); // Display current playing Surah
+const searchInput = document.getElementById("searchSurah");   // Search input
 
 // =============================
 // GLOBAL VARIABLES
 // =============================
-let surahs = [];
-let currentPlaying = null;
+let surahs = [];           // List of Surahs fetched from API
+let currentPlaying = null; // Currently playing Surah number
 
 // =============================
 // LOAD SURAH LIST FROM API
@@ -19,10 +19,11 @@ let currentPlaying = null;
 async function loadSurahs() {
     try {
         surahList.innerHTML = "<p>Loading Surahs...</p>";
-        let res = await fetch("https://api.alquran.cloud/v1/surah");
+
+        const res = await fetch("https://api.alquran.cloud/v1/surah");
         if (!res.ok) throw new Error("API response not OK");
 
-        let data = await res.json();
+        const data = await res.json();
         if (!data.data) throw new Error("Invalid API Data");
 
         surahs = data.data;
@@ -31,8 +32,8 @@ async function loadSurahs() {
         console.error(error);
         surahList.innerHTML = `
             <p style="color:red">
-            ❌ Surah list load nahi ho saki.<br>
-            Check internet connection.
+                ❌ Surah list load nahi ho saki.<br>
+                Check internet connection.
             </p>
         `;
     }
@@ -45,7 +46,7 @@ function displaySurahs(list) {
     surahList.innerHTML = "";
 
     list.forEach(surah => {
-        let card = document.createElement("div");
+        const card = document.createElement("div");
         card.className = "surah-card";
 
         card.innerHTML = `
@@ -66,17 +67,17 @@ function displaySurahs(list) {
 surahList.addEventListener("click", (e) => {
     if (!e.target.classList.contains("playBtn")) return;
 
-    let button = e.target;
-    let surahNumber = button.dataset.id;
-    let qari = qariSelect.value;
+    const button = e.target;
+    const surahNumber = button.dataset.id;
+    const qari = qariSelect.value;
 
-    let surah = surahs.find(s => s.number == surahNumber);
+    const surah = surahs.find(s => s.number == surahNumber);
     if (!surah) {
         alert("❌ Surah nahi mili");
         return;
     }
 
-    let audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surahNumber}.mp3`;
+    const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surahNumber}.mp3`;
 
     // SAME SURAH → TOGGLE PLAY/PAUSE
     if (currentPlaying === surahNumber) {
@@ -92,29 +93,31 @@ surahList.addEventListener("click", (e) => {
         return;
     }
 
-    // RESET ALL BUTTONS
+    // RESET ALL PLAY BUTTONS
     document.querySelectorAll(".playBtn").forEach(btn => btn.innerText = "▶");
 
-    // NEW SURAH PLAY
+    // PLAY NEW SURAH
     audio.src = audioUrl;
     currentPlaying = surahNumber;
     button.innerText = "⏸";
     currentSurah.innerText = `Loading: ${surah.englishName}...`;
 
-    audio.play().then(() => {
-        currentSurah.innerText = `Playing: ${surah.englishName}`;
-    }).catch(() => {
-        button.innerText = "▶";
-        currentSurah.innerText = "❌ Audio play nahi ho saki";
-    });
+    audio.play()
+        .then(() => {
+            currentSurah.innerText = `Playing: ${surah.englishName}`;
+        })
+        .catch(() => {
+            button.innerText = "▶";
+            currentSurah.innerText = "❌ Audio play nahi ho saki";
+        });
 });
 
 // =============================
 // SEARCH SURAH
 // =============================
 searchInput.addEventListener("input", () => {
-    let keyword = searchInput.value.toLowerCase();
-    let filtered = surahs.filter(surah =>
+    const keyword = searchInput.value.toLowerCase();
+    const filtered = surahs.filter(surah =>
         surah.englishName.toLowerCase().includes(keyword) ||
         surah.englishNameTranslation.toLowerCase().includes(keyword)
     );
