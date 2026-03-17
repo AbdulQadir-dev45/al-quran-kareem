@@ -291,11 +291,12 @@ audio {
 #mushaf-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
     max-width: 100%;
     height: auto;
-    overflow: hidden;
+    overflow: auto;
 }
 
 #mushaf-container img {
