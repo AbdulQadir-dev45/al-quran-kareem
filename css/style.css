@@ -62,6 +62,7 @@ header {
 
 header img {
     height: 130px;
+    margin: 5px;
 }
 
 /* ==============================
@@ -93,7 +94,7 @@ header img {
     padding: 8px 12px;
     border: none;
     border-radius: 6px;
-    color: white;
+    /* color: white; */
     cursor: pointer;
 }
 
@@ -130,7 +131,7 @@ header img {
 .container {
     max-width: 900px;
     margin: 170px auto 130px auto;
-    padding: 30px 20px;
+    padding: 10px 20px;
 }
 
 /* ==============================
@@ -232,8 +233,15 @@ audio {
 /* ==============================
    SURAH LIST
 ============================== */
+#tilawatTitle {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+}
+
 .surah-list {
-    margin-top: 20px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -284,7 +292,7 @@ audio {
 #mushafTitle {
     text-align: center;
     font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
     font-weight: 600;
 }
 
@@ -428,22 +436,20 @@ audio {
 
     nav ul.nav-links {
         position: absolute;
-        top: 110px;
+        top: 100px;
         right: 0;
         background: #047857;
         flex-direction: column;
         align-items: flex-start;
-        width: 100%;
+        width: 65%;
         transform: translateX(100%);
         transition: transform 0.3s ease-in;
         padding-top: 20px;
         z-index: 10;
     }
 
-    .nav-links li a,
     .nav-links button {
-        margin: 10px;
-        color: white;
+        margin: 15px 10px;
     }
 
     nav ul.nav-links.active {
@@ -451,7 +457,8 @@ audio {
     }
 
     header img {
-        height: 100px;
+        height: 80px;
+        margin: 5px;
     }
 
     .hamburger {
@@ -459,7 +466,7 @@ audio {
     }
 
     .container {
-        margin-top: 130px;
+        margin-top: 120px;
     }
 
     .arabic {

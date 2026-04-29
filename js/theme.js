@@ -13,9 +13,9 @@ if (toggle) {
     // Set initial theme based on localStorage
     if (localStorage.getItem("theme") === "light") {
         document.body.classList.add("light");
-        toggle.textContent = "☀️";
+        toggle.textContent = "Theme";
     } else {
-        toggle.textContent = "🌙";
+        toggle.textContent = "Theme";
     }
 
     // Toggle theme on button click
@@ -24,10 +24,10 @@ if (toggle) {
 
         if (document.body.classList.contains("light")) {
             localStorage.setItem("theme", "light");
-            toggle.textContent = "☀️";
+            toggle.textContent = "Theme";
         } else {
             localStorage.setItem("theme", "dark");
-            toggle.textContent = "🌙";
+            toggle.textContent = "Theme";
         }
     });
 }
