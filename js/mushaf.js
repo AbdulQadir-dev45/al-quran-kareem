@@ -3,10 +3,6 @@
 // ===============================
 const totalPages = 604;
 let currentPage = 1;
-let zoomLevel = 1;
-
-const MIN_ZOOM = 1;   // 👈 zoom out limit
-const MAX_ZOOM = 3;     // 👈 zoom in limit
 
 const container = document.getElementById('mushaf-container');
 const pageNumberDisplay = document.getElementById('page-number');
@@ -18,10 +14,6 @@ const showBookmarksBtn = document.getElementById('show-bookmarks-btn');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const body = document.body;
 
-// ZOOM BUTTONS
-const zoomInBtn = document.getElementById("zoom-in");
-const zoomOutBtn = document.getElementById("zoom-out");
-const zoomResetBtn = document.getElementById("zoom-reset");
 
 // ===============================
 // SHOW PAGE FUNCTION
@@ -39,17 +31,6 @@ function showPage(page) {
 
     preloadPage(page - 1);
     preloadPage(page + 1);
-}
-
-// ===============================
-// ZOOM FUNCTION
-// ===============================
-function applyZoom() {
-    const img = container.querySelector('img');
-    if (img) {
-        img.style.transform = `scale(${zoomLevel})`;
-        img.style.transformOrigin = "center center";
-    }
 }
 
 // ===============================
@@ -83,45 +64,6 @@ bookmarkBtn.addEventListener('click', () => addBookmark(currentPage));
 showBookmarksBtn.addEventListener('click', showBookmarks);
 fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-// ===============================
-// ZOOM BUTTON EVENTS
-// ===============================
-zoomInBtn.addEventListener("click", () => {
-    if (zoomLevel < MAX_ZOOM) {
-        zoomLevel += 0.2;
-        applyZoom();
-    }
-});
-
-zoomOutBtn.addEventListener("click", () => {
-    if (zoomLevel > MIN_ZOOM) {
-        zoomLevel -= 0.2;
-        if (zoomLevel < MIN_ZOOM) zoomLevel = MIN_ZOOM;
-        applyZoom();
-    }
-});
-
-zoomResetBtn.addEventListener("click", () => {
-    zoomLevel = 1;
-    applyZoom();
-});
-
-// ===============================
-// MOUSE WHEEL ZOOM
-// ===============================
-container.addEventListener("wheel", (e) => {
-    e.preventDefault();
-
-    if (e.deltaY < 0) {
-        zoomLevel += 0.1;
-        if (zoomLevel > MAX_ZOOM) zoomLevel = MAX_ZOOM;
-    } else {
-        zoomLevel -= 0.1;
-        if (zoomLevel < MIN_ZOOM) zoomLevel = MIN_ZOOM;
-    }
-
-    applyZoom();
-});
 
 // ===============================
 // KEYBOARD NAVIGATION
