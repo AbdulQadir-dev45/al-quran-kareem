@@ -439,7 +439,8 @@ audio {
         position: absolute;
         top: 100px;
         right: 0;
-        background: #047857;
+        background: url("https://www.transparenttextures.com/patterns/arabesque.png");
+        background-color: #047857;
         flex-direction: column;
         align-items: flex-start;
         width: 65%;
