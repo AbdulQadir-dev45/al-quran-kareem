@@ -1,41 +1,78 @@
 // ===============================
 // GLOBAL VARIABLES
 // ===============================
+
 const totalPages = 604;
-let currentPage = 1;
+let currentPage = parseInt(localStorage.getItem("lastPage")) || 1;
 
 const container = document.getElementById('mushaf-container');
 const pageNumberDisplay = document.getElementById('page-number');
+
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+
 const jumpInput = document.getElementById('jump-to-page');
+
 const bookmarkBtn = document.getElementById('bookmark-btn');
 const showBookmarksBtn = document.getElementById('show-bookmarks-btn');
+
 const fullscreenBtn = document.getElementById('fullscreen-btn');
-const body = document.body;
-
 
 // ===============================
-// SHOW PAGE FUNCTION
+// SHOW PAGE
 // ===============================
+
 function showPage(page) {
+
+    container.innerHTML = `<div class="loading">Loading Page...</div>`;
+
     const folder = "images/mushaf/";
-    const fileName = `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
+
+    const fileName =
+        `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
+
     const imgSrc = folder + encodeURI(fileName);
 
-    container.innerHTML = `<img src="${imgSrc}" alt="Page ${page}" loading="lazy">`;
-    pageNumberDisplay.textContent = page;
+    const img = new Image();
 
-    updateImageMode();
-    applyZoom();
+    img.src = imgSrc;
 
-    preloadPage(page - 1);
-    preloadPage(page + 1);
+    img.alt = `Quran Page ${page}`;
+
+    img.onload = () => {
+
+        container.innerHTML = '';
+
+        container.appendChild(img);
+
+        pageNumberDisplay.textContent = `${page} / ${totalPages}`;
+
+        localStorage.setItem("lastPage", page);
+
+        updateButtons();
+
+        preloadPage(page + 1);
+        preloadPage(page - 1);
+    };
+
+    img.onerror = () => {
+        container.innerHTML = `<div class="loading">Failed to load page.</div>`;
+    };
 }
 
 // ===============================
-// BUTTON EVENTS
+// BUTTON STATES
 // ===============================
+
+function updateButtons() {
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+}
+
+// ===============================
+// NAVIGATION
+// ===============================
+
 prevBtn.addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
@@ -50,116 +87,191 @@ nextBtn.addEventListener('click', () => {
     }
 });
 
-jumpInput.addEventListener('change', () => {
-    const page = parseInt(jumpInput.value);
-    if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        showPage(currentPage);
-    } else {
-        alert(`Enter a number between 1 and ${totalPages}`);
-    }
-});
-
-bookmarkBtn.addEventListener('click', () => addBookmark(currentPage));
-showBookmarksBtn.addEventListener('click', showBookmarks);
-fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-
 // ===============================
-// KEYBOARD NAVIGATION
+// JUMP TO PAGE
 // ===============================
-document.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case "ArrowLeft":
-            if (currentPage > 1) {
-                currentPage--;
-                showPage(currentPage);
-            }
-            break;
 
-        case "ArrowRight":
-            if (currentPage < totalPages) {
-                currentPage++;
-                showPage(currentPage);
-            }
-            break;
+jumpInput.addEventListener('keypress', (e) => {
 
-        case "Home":
-            currentPage = 1;
+    if (e.key === "Enter") {
+
+        const page = parseInt(jumpInput.value);
+
+        if (page >= 1 && page <= totalPages) {
+
+            currentPage = page;
+
             showPage(currentPage);
-            break;
 
-        case "End":
-            currentPage = totalPages;
-            showPage(currentPage);
-            break;
+            jumpInput.value = '';
 
-        case "b":
-        case "B":
-            addBookmark(currentPage);
-            break;
-
-        case "f":
-        case "F":
-            toggleFullscreen();
-            break;
+        } else {
+            alert(`Enter page between 1 - ${totalPages}`);
+        }
     }
 });
 
 // ===============================
-// BOOKMARK FUNCTIONS
+// BOOKMARKS
 // ===============================
+
 function addBookmark(page) {
-    let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    if (!bookmarks.includes(page)) bookmarks.push(page);
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-    alert(`Page ${page} bookmarked!`);
+
+    let bookmarks =
+        JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+    if (!bookmarks.includes(page)) {
+
+        bookmarks.push(page);
+
+        bookmarks.sort((a, b) => a - b);
+
+        localStorage.setItem(
+            'bookmarks',
+            JSON.stringify(bookmarks)
+        );
+
+        alert(`Page ${page} bookmarked`);
+    } else {
+        alert("Already bookmarked");
+    }
 }
 
 function showBookmarks() {
-    let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    alert(bookmarks.length ? 'Bookmarked Pages: ' + bookmarks.join(', ') : 'No bookmarks found.');
+
+    let bookmarks =
+        JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+    if (bookmarks.length === 0) {
+        alert("No bookmarks found");
+        return;
+    }
+
+    const selected = prompt(
+        `Bookmarks:\n${bookmarks.join(", ")}\n\nEnter page number to open:`
+    );
+
+    if (selected) {
+
+        const page = parseInt(selected);
+
+        if (bookmarks.includes(page)) {
+            currentPage = page;
+            showPage(page);
+        }
+    }
 }
+
+bookmarkBtn.addEventListener('click', () => addBookmark(currentPage));
+
+showBookmarksBtn.addEventListener('click', showBookmarks);
 
 // ===============================
 // FULLSCREEN
 // ===============================
+
 function toggleFullscreen() {
+
     if (!document.fullscreenElement) {
-        container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
+        container.requestFullscreen();
     } else {
-        document.exitFullscreen?.();
+        document.exitFullscreen();
     }
 }
+
+fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+// ===============================
+// KEYBOARD SUPPORT
+// ===============================
+
+document.addEventListener('keydown', (e) => {
+
+    switch (e.key) {
+
+        case "ArrowLeft":
+
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+
+            break;
+
+        case "ArrowRight":
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                showPage(currentPage);
+            }
+
+            break;
+
+        case "Home":
+
+            currentPage = 1;
+            showPage(currentPage);
+
+            break;
+
+        case "End":
+
+            currentPage = totalPages;
+            showPage(currentPage);
+
+            break;
+    }
+});
 
 // ===============================
 // PRELOAD
 // ===============================
+
 function preloadPage(page) {
+
     if (page < 1 || page > totalPages) return;
+
     const folder = "images/mushaf/";
-    const fileName = `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
+
+    const fileName =
+        `06 Al-madina Quran - Beautiful Fonts [www.Momeen.blogspot.com]_page-${String(page).padStart(4, '0')}.jpg`;
+
     const img = new Image();
+
     img.src = folder + encodeURI(fileName);
 }
 
 // ===============================
-// SWIPE SUPPORT
+// TOUCH SWIPE
 // ===============================
-let startX;
 
-container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+let startX = 0;
 
-container.addEventListener('touchend', e => {
-    const endX = e.changedTouches[0].clientX;
+container.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+});
 
-    if (startX - endX > 50 && currentPage < totalPages) currentPage++;
-    if (endX - startX > 50 && currentPage > 1) currentPage--;
+container.addEventListener('touchend', (e) => {
 
-    showPage(currentPage);
+    let endX = e.changedTouches[0].clientX;
+
+    if (startX - endX > 50 && currentPage < totalPages) {
+
+        currentPage++;
+
+        showPage(currentPage);
+    }
+
+    if (endX - startX > 50 && currentPage > 1) {
+
+        currentPage--;
+
+        showPage(currentPage);
+    }
 });
 
 // ===============================
 // INITIAL LOAD
 // ===============================
+
 showPage(currentPage);
